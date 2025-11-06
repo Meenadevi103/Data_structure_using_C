@@ -22,8 +22,9 @@ void enqueue(int value) {
         return;
     }
     newNode->data = value;
-    newNode->next = NULL;
-
+    newNode->next = front;
+    newNode->next = rear;
+	
     if (rear == NULL) {  // Queue is empty
         front = rear = newNode;
     } else {
