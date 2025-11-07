@@ -21,7 +21,6 @@ void insert(int value) {
     } else {
         node *temp = head;
 
-        // Move to last node
         while (temp->next != head)
             temp = temp->next;
 
@@ -49,60 +48,80 @@ void display() {
     printf("\n");
 }
 
-//reverse
+// Delete by value
+void delete(int value) {
+    if (head == NULL) {
+        printf("List Empty\n");
+        return;
+    }
+
+    node *temp = head;
+
+    // Case: Only one node
+    if (head->data == value && head->next == head) {
+        head = NULL;
+        free(temp);
+        printf("Deleted %d\n", value);
+        return;
+    }
+
+    // search value
+    while (temp->data != value && temp->next != head)
+        temp = temp->next;
+
+    if (temp->data != value) {
+        printf("Value not found\n");
+        return;
+    }
+
+    temp->prev->next = temp->next;
+    temp->next->prev = temp->prev;
+
+    if (temp == head)
+        head = head->next;
+
+    free(temp);
+    printf("Deleted %d\n", value);
+}
+
+// Reverse
 void reverse() {
     if (head == NULL || head->next == head) {
         printf("List reversed\n");
         return;
     }
 
-    struct node *current = head;
-    struct node *prev = NULL, *next = NULL;
+    node *temp = head, *prev = NULL, *next = NULL;
 
     do {
-        next = current->next;       // store next
-        current->next = prev;       // reverse next pointer
-        current->prev = next;       // also fix prev pointer (important in DLL)
-        prev = current;             // move prev
-        current = next;             // move current
-    } while (current != head);
+        next = temp->next;
+        temp->next = prev;
+        temp->prev = next;
+        prev = temp;
+        temp = next;
+    } while (temp != head);
 
-    // Final adjustments for circularity
     head->next = prev;
     prev->prev = head;
-    
-    head = prev; // new head
+    head = prev;
+
     printf("List reversed\n");
 }
 
 int main() {
-    int choice, val;
+    int ch, val;
 
     while (1) {
-        printf("\n1.Insert\n2.Display\n3.Reverse\n4.Exit\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
+        printf("\n1.Insert\n2.Display\n3.Delete\n4.Reverse\n5.Exit\nEnter choice: ");
+        scanf("%d", &ch);
 
-        switch (choice) {
-            case 1:
-                printf("Enter value: ");
-                scanf("%d", &val);
-                insert(val);
-                break;
-
-            case 2:
-                display();
-                break;
-
-            case 3:
-                reverse();
-                break;
-
-            case 4:
-                exit(0);
-
-            default:
-                printf("Invalid choice\n");
+        switch (ch) {
+            case 1: printf("Enter value: "); scanf("%d", &val); insert(val); break;
+            case 2: display(); break;
+            case 3: printf("Enter value: "); scanf("%d", &val); delete(val); break;
+            case 4: reverse(); break;
+            case 5: exit(0);
+            default: printf("Invalid choice\n");
         }
     }
 }
